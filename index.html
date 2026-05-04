@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HimaBindhu Chennupati — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,300..600;1,6..96,300..500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Cinzel:wght@400;500;600&family=Manrope:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060509;
+    --bg-soft: #0d0a10;
+    --ink: #ede2c9;          /* warm parchment cream — main text, highly legible */
+    --ink-soft: #c5b89c;     /* aged paper — body text */
+    --ink-mute: #948871;     /* warm taupe — visible small caps */
+    --line: rgba(237, 226, 201, 0.14);
+    --line-soft: rgba(237, 226, 201, 0.06);
+    --gold: #c69661;         /* deep antique gold — labels, decorative lines, headline italics */
+    --wine: #a26565;         /* muted bordeaux — body italic emphasis */
+    --display: 'Bodoni Moda', serif;
+    --displaySC: 'Cinzel', serif;
+    --serif: 'EB Garamond', serif;
+    --sans: 'Manrope', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Subtle film grain over the whole page */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 200;
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  /* Bodoni Moda tuning — large display optical, restrained weight */
+  .hero-name, .section-title, .feature-content h3,
+  .tl-body h4, .skills-list li, .edu-item h4, .cert-item h4,
+  .contact h2, .contact-mail, .feature-num {
+    font-weight: 400;
+    font-variation-settings: "opsz" 96;
+  }
+  /* Italic accents within display titles — slightly lighter for grace */
+  .section-title em, .contact h2 em, .hero-name .last {
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  /* ---------- INTRO / CHERRY TREE LOADER ---------- */
+  .intro {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 1.2s linear;
+  }
+  .intro.is-fading {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  /* atmospheric glow now lives entirely in the gif's drop-shadow */
+
+  .intro-tree {
+    position: relative;
+    width: min(440px, 70vmin);
+    height: min(440px, 70vmin);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: introFadeIn 1.6s ease 0.2s forwards;
+  }
+  .intro-tree img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 18px rgba(239, 186, 194, 0.55))
+            drop-shadow(0 0 50px rgba(239, 186, 194, 0.22))
+            drop-shadow(0 0 110px rgba(233, 200, 156, 0.1));
+  }
+
+  .intro-name {
+    position: relative;
+    margin-top: 8px;
+    font-family: var(--displaySC);
+    font-weight: 500;
+    font-size: clamp(20px, 2.4vw, 28px);
+    color: var(--ink);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: introFadeIn 1.6s ease 1.4s forwards;
+  }
+  .intro-tag {
+    position: relative;
+    margin-top: 14px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: introFadeIn 1.6s ease 1.8s forwards;
+  }
+  .intro-tag .sep {
+    display: inline-block;
+    width: 18px;
+    height: 1px;
+    background: var(--gold);
+    vertical-align: middle;
+    margin: 0 12px;
+    transform: translateY(-2px);
+  }
+
+  /* tiny progress line */
+  .intro-bar {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 1px;
+    background: var(--line);
+    overflow: hidden;
+    opacity: 0;
+    animation: introFadeIn 1.6s ease 2.2s forwards;
+  }
+  .intro-bar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    transform: translateX(-100%);
+    animation: introBar 3.5s ease-in-out 0.4s forwards;
+  }
+
+  @keyframes introFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes introBar {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(100%); }
+  }
+
+  body.intro-active { overflow: hidden; height: 100vh; }
+
+  /* ---------- NAV ---------- */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 28px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background: linear-gradient(to bottom, rgba(5,5,5,0.6), rgba(5,5,5,0));
+    transition: background 0.4s ease;
+  }
+  nav .mark {
+    font-family: var(--displaySC);
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    color: var(--ink);
+  }
+  nav .mark span { color: var(--gold); }
+  nav ul {
+    display: flex;
+    gap: 38px;
+    list-style: none;
+  }
+  nav ul a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    font-weight: 300;
+    transition: color 0.3s ease;
+    position: relative;
+  }
+  nav ul a:hover { color: var(--ink); }
+  nav ul a::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: -6px;
+    width: 0;
+    height: 1px;
+    background: var(--gold);
+    transition: width 0.4s ease;
+  }
+  nav ul a:hover::after { width: 100%; }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+  }
+
+  .hero-bg-gif {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(900px, 90vw);
+    height: auto;
+    opacity: 0.55;
+    mix-blend-mode: screen;
+    z-index: 1;
+    pointer-events: none;
+    filter: blur(0.5px) saturate(1.1);
+  }
+
+  /* radial vignette over hero gif so name is readable */
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(5,5,5,0) 0%, rgba(5,5,5,0.55) 55%, rgba(5,5,5,0.95) 100%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 5;
+    text-align: center;
+    padding: 0 24px;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(14px, 1.2vw, 17px);
+    color: var(--gold);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.4s forwards;
+  }
+
+  .hero-name {
+    font-family: var(--display);
+    font-size: clamp(56px, 11vw, 168px);
+    line-height: 0.92;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+    font-weight: 400;
+    position: relative;
+    display: inline-block;
+  }
+  .hero-name .first {
+    display: block;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.7s forwards;
+  }
+  .hero-name .last {
+    display: block;
+    font-style: italic;
+    font-family: var(--display);
+    font-weight: 400;
+    color: var(--ink-soft);
+    margin-top: -0.05em;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 1s forwards;
+  }
+
+  .hero-tagline {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(15px, 1.4vw, 19px);
+    color: var(--ink-mute);
+    letter-spacing: 0.18em;
+    margin-top: 36px;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 1.4s forwards;
+  }
+  .hero-tagline .dot {
+    display: inline-block;
+    width: 4px; height: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+    margin: 0 14px;
+    transform: translateY(-3px);
+  }
+
+  /* ---------- BUTTERFLY perched on top of the H letter ---------- */
+  .h-anchor {
+    position: relative;
+    display: inline-block;
+  }
+  .butterfly {
+    position: absolute;
+    width: clamp(140px, 16vw, 220px);
+    aspect-ratio: 1 / 1;
+    /* anchor point = top edge of H, horizontally centered */
+    left: 50%;
+    top: 0;
+    z-index: 6;
+    pointer-events: none;
+    opacity: 0;
+    /* RESTING POSE: butterfly perched with feet just touching the H's cap.
+       The butterfly GIF has ~16% transparent padding below the visible wing tips,
+       so translate -68% lands the visible content right on top of the H. */
+    transform: translate(-50%, -68%) scale(1) rotate(0deg);
+    will-change: transform, opacity;
+    animation:
+      butterflyJourney 6s cubic-bezier(0.4, 0, 0.2, 1) 5s forwards,
+      butterflyHover 6s ease-in-out 11s infinite;
+  }
+  .butterfly img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 28px rgba(239, 186, 194, 0.22))
+            drop-shadow(0 0 14px rgba(233, 200, 156, 0.18));
+  }
+
+  /* SINGLE smooth arc — from upper-left corner to perched on H. */
+  @keyframes butterflyJourney {
+    0% {
+      opacity: 0;
+      transform:
+        translate(calc(-50% - 55vw), calc(-68% - 38vh))
+        scale(0.42)
+        rotate(-12deg);
+    }
+    10% { opacity: 1; }
+    100% {
+      opacity: 1;
+      transform:
+        translate(-50%, -68%)
+        scale(1)
+        rotate(0deg);
+    }
+  }
+
+  /* Gentle breathing once perched */
+  @keyframes butterflyHover {
+    0%, 100% {
+      transform: translate(-50%, -68%) scale(1) rotate(0deg);
+    }
+    50% {
+      transform: translate(-50%, -71%) scale(1.035) rotate(-1.6deg);
+    }
+  }
+
+  /* hint to scroll */
+  .scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    color: var(--ink-mute);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 2s forwards, pulse 2.5s ease-in-out 3s infinite;
+  }
+  .scroll-hint::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 36px;
+    background: linear-gradient(to bottom, var(--ink-mute), transparent);
+    margin: 14px auto 0;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  /* ---------- COMMON SECTION STYLES ---------- */
+  section {
+    position: relative;
+    padding: 140px 8vw;
+  }
+
+  .section-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .section-label::before {
+    content: '';
+    width: 36px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .section-title {
+    font-family: var(--display);
+    font-size: clamp(38px, 6vw, 84px);
+    line-height: 1.04;
+    color: var(--ink);
+    margin-bottom: 56px;
+    font-weight: 400;
+    letter-spacing: 0.005em;
+  }
+  .section-title em {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- ABOUT (with scroll-controlled second gif) ---------- */
+  .about {
+    min-height: 130vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .about-bg-gif {
+    position: absolute;
+    top: 50%; left: 0;
+    transform: translate(-30%, -50%) scale(1);
+    width: 60vw;
+    max-width: 720px;
+    height: auto;
+    opacity: 0;
+    mix-blend-mode: screen;
+    z-index: 1;
+    pointer-events: none;
+    transition: none;
+    filter: blur(2px) saturate(1.1);
+  }
+  /* dark gradient overlay over the right side to keep body text crisp */
+  .about::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 65%;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(to right, rgba(5,5,5,0) 0%, rgba(5,5,5,0.85) 50%, rgba(5,5,5,1) 100%);
+  }
+
+  .about-inner {
+    position: relative;
+    z-index: 5;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .about-left .section-title {
+    margin-bottom: 0;
+  }
+  .about-right p {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(18px, 1.5vw, 22px);
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin-bottom: 28px;
+  }
+  .about-right p em {
+    color: var(--wine);
+    font-style: italic;
+  }
+  .about-right .signature {
+    font-family: var(--display);
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: 0.1em;
+    margin-top: 40px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+
+  /* ---------- SKILLS ---------- */
+  .skills {
+    background: linear-gradient(to bottom, var(--bg) 0%, var(--bg-soft) 50%, var(--bg) 100%);
+  }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .skills-col h3 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 24px;
+    color: var(--gold);
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+    letter-spacing: 0.04em;
+  }
+  .skills-list {
+    list-style: none;
+  }
+  .skills-list li {
+    font-family: var(--display);
+    font-size: clamp(22px, 2.2vw, 32px);
+    color: var(--ink);
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    transition: color 0.4s ease, padding 0.4s ease;
+    cursor: default;
+  }
+  .skills-list li:hover {
+    color: var(--gold);
+    padding-left: 12px;
+  }
+  .skills-list li .meta {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- TIMELINE / EXPERIENCE ---------- */
+  .timeline-wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .timeline-wrap::before {
+    content: '';
+    position: absolute;
+    left: 140px;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: var(--line);
+  }
+  .tl-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 60px;
+    margin-bottom: 64px;
+    position: relative;
+  }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: 134px;
+    top: 14px;
+    width: 13px;
+    height: 13px;
+    background: var(--bg);
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    transition: background 0.4s ease;
+  }
+  .tl-item:hover::before {
+    background: var(--gold);
+    box-shadow: 0 0 18px rgba(212, 180, 131, 0.5);
+  }
+  .tl-date {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    text-align: right;
+    padding-top: 8px;
+  }
+  .tl-body h4 {
+    font-family: var(--display);
+    font-size: clamp(24px, 2.4vw, 32px);
+    color: var(--ink);
+    margin-bottom: 4px;
+    font-weight: 400;
+  }
+  .tl-body .role-org {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 17px;
+    margin-bottom: 18px;
+    letter-spacing: 0.02em;
+  }
+  .tl-body ul {
+    list-style: none;
+    padding: 0;
+  }
+  .tl-body ul li {
+    font-family: var(--sans);
+    font-weight: 300;
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.7;
+    padding-left: 24px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .tl-body ul li::before {
+    content: '✦';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 10px;
+    top: 6px;
+  }
+
+  /* ---------- PROJECT FEATURE ---------- */
+  .feature-card {
+    max-width: 1100px;
+    margin: 0 auto;
+    border: 1px solid var(--line);
+    padding: 80px 8%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    position: relative;
+    background: linear-gradient(135deg, rgba(212,180,131,0.03) 0%, transparent 60%);
+    transition: border-color 0.5s ease;
+  }
+  .feature-card:hover {
+    border-color: rgba(212,180,131,0.4);
+  }
+  .feature-card::before, .feature-card::after {
+    content: '';
+    position: absolute;
+    width: 24px; height: 24px;
+    border: 1px solid var(--gold);
+  }
+  .feature-card::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
+  .feature-card::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
+
+  .feature-num {
+    font-family: var(--display);
+    font-size: clamp(80px, 14vw, 200px);
+    color: transparent;
+    -webkit-text-stroke: 1px var(--gold);
+    line-height: 1;
+    opacity: 0.8;
+  }
+  .feature-content h3 {
+    font-family: var(--display);
+    font-size: clamp(28px, 3vw, 44px);
+    color: var(--ink);
+    margin-bottom: 18px;
+    line-height: 1.1;
+    font-weight: 400;
+  }
+  .feature-content p {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+  }
+  .feature-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .feature-tags span {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    color: var(--ink-mute);
+    padding: 7px 14px;
+    border: 1px solid var(--line);
+  }
+
+  /* ---------- EDU + CERTS ---------- */
+  .duo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .duo-col h3 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 28px;
+    color: var(--gold);
+    margin-bottom: 36px;
+    font-weight: 300;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .edu-item, .cert-item {
+    margin-bottom: 28px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .edu-item:last-child, .cert-item:last-child { border-bottom: 0; }
+  .edu-item .yr, .cert-item .yr {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .edu-item h4, .cert-item h4 {
+    font-family: var(--display);
+    font-size: clamp(20px, 1.8vw, 26px);
+    color: var(--ink);
+    font-weight: 400;
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+  .edu-item .meta, .cert-item .meta {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 15px;
+  }
+
+  /* ---------- CONTACT ---------- */
+  .contact {
+    text-align: center;
+    padding: 180px 8vw 100px;
+    border-top: 1px solid var(--line);
+    position: relative;
+  }
+  .contact .section-label {
+    justify-content: center;
+  }
+  .contact .section-label::before { display: none; }
+  .contact h2 {
+    font-family: var(--display);
+    font-size: clamp(40px, 7vw, 96px);
+    color: var(--ink);
+    line-height: 1.05;
+    font-weight: 400;
+    margin-bottom: 24px;
+  }
+  .contact h2 em {
+    font-family: var(--display);
+    font-style: italic;
+    color: var(--gold);
+    font-weight: 400;
+  }
+  .contact p.lead {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 20px;
+    color: var(--ink-soft);
+    max-width: 580px;
+    margin: 0 auto 50px;
+    line-height: 1.6;
+  }
+  .contact-mail {
+    display: inline-block;
+    font-family: var(--display);
+    font-size: clamp(22px, 2.4vw, 32px);
+    color: var(--ink);
+    text-decoration: none;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--gold);
+    letter-spacing: 0.02em;
+    transition: letter-spacing 0.4s ease, color 0.4s ease;
+  }
+  .contact-mail:hover {
+    letter-spacing: 0.06em;
+    color: var(--gold);
+  }
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    margin-top: 60px;
+    flex-wrap: wrap;
+  }
+  .contact-links a {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-mute);
+    text-decoration: none;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+  }
+  .contact-links a:hover { color: var(--gold); }
+
+  footer {
+    text-align: center;
+    padding: 36px 24px;
+    border-top: 1px solid var(--line-soft);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-mute);
+    letter-spacing: 0.1em;
+  }
+  footer span { color: var(--gold); }
+
+  /* ---------- DECORATIVE ASTERISMS ---------- */
+  .asterism {
+    text-align: center;
+    color: var(--gold);
+    font-size: 14px;
+    letter-spacing: 1em;
+    padding: 24px 0;
+    opacity: 0.5;
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 880px) {
+    nav { padding: 20px 24px; }
+    nav ul { gap: 18px; }
+    nav ul a { font-size: 10px; letter-spacing: 0.18em; }
+    section { padding: 100px 6vw; }
+    .about-inner { grid-template-columns: 1fr; gap: 40px; }
+    .skills-grid { grid-template-columns: 1fr; gap: 40px; }
+    .timeline-wrap::before { left: 60px; }
+    .tl-item { grid-template-columns: 80px 1fr; gap: 30px; }
+    .tl-item::before { left: 54px; }
+    .tl-date { text-align: left; font-size: 13px; }
+    .feature-card { grid-template-columns: 1fr; gap: 30px; padding: 50px 32px; }
+    .duo-grid { grid-template-columns: 1fr; gap: 60px; }
+    .butterfly { width: clamp(110px, 24vw, 170px); }
+  }
+
+  @media (max-width: 560px) {
+    nav .mark { font-size: 16px; }
+    nav ul { display: none; }
+    .hero-tagline .dot { margin: 0 8px; }
+  }
+</style>
+</head>
+<body class="intro-active">
+
+<!-- ========== INTRO LOADER ========== -->
+<div class="intro" id="intro">
+  <div class="intro-tree">
+    <img src="cherry_tree.gif" alt="" />
+  </div>
+  <div class="intro-name">HimaBindhu Chennupati</div>
+  <div class="intro-tag"><span class="sep"></span>The Portfolio<span class="sep"></span></div>
+  <div class="intro-bar"></div>
+</div>
+
+<nav>
+  <div class="mark">H<span>·</span>C</div>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Craft</a></li>
+    <li><a href="#journey">Journey</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero" id="home">
+  <img src="background_home.gif" alt="" class="hero-bg-gif" />
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Portfolio · MMXXVI</div>
+    <h1 class="hero-name">
+      <span class="first"><span class="h-anchor">H<span class="butterfly"><img src="butterfly.gif" alt="" /></span></span>imaBindhu</span>
+      <span class="last">Chennupati</span>
+    </h1>
+    <div class="hero-tagline">
+      Project Management <span class="dot"></span> Aspiring &amp; Curious <span class="dot"></span> Building Beautifully
+    </div>
+  </div>
+
+  <div class="scroll-hint">scroll to begin</div>
+</section>
+
+<!-- ========== ABOUT ========== -->
+<section class="about" id="about">
+  <img src="background_second.gif" alt="" class="about-bg-gif" id="aboutGif" />
+  <div class="about-inner">
+    <div class="about-left">
+      <div class="section-label">A Note</div>
+      <h2 class="section-title">Hello, I'm <em>Bindhu.</em></h2>
+    </div>
+    <div class="about-right">
+      <p>
+        I'm an aspiring <em>project management professional</em> with a quiet passion
+        for turning chaos into clarity. I love the choreography of moving pieces —
+        timelines, people, problems — and finding the rhythm that lets a team breathe.
+      </p>
+      <p>
+        Trained in Computer Science, fluent in Agile and Scrum, and most at home
+        when something needs <em>organising, untangling, or shipping</em>. I learn
+        quickly, take initiative gladly, and believe the best work happens when
+        process meets warmth.
+      </p>
+      <div class="signature">— H. Chennupati</div>
+    </div>
+  </div>
+</section>
+
+<div class="asterism">✦  ✦  ✦</div>
+
+<!-- ========== SKILLS ========== -->
+<section class="skills" id="skills">
+  <div class="section-label">Section II · The Craft</div>
+  <h2 class="section-title">Tools &amp; <em>tendencies</em></h2>
+
+  <div class="skills-grid">
+    <div class="skills-col">
+      <h3>Technical</h3>
+      <ul class="skills-list">
+        <li>MS Excel <span class="meta">Analysis · Reporting</span></li>
+        <li>PowerPoint <span class="meta">Client-Ready Decks</span></li>
+        <li>Jira <span class="meta">Task Tracking</span></li>
+        <li>Agile / Scrum <span class="meta">Methodology</span></li>
+        <li>Project Lifecycle <span class="meta">Foundational</span></li>
+        <li>Python <span class="meta">Data Basics</span></li>
+      </ul>
+    </div>
+    <div class="skills-col">
+      <h3>Professional</h3>
+      <ul class="skills-list">
+        <li>Coordination <span class="meta">Documentation</span></li>
+        <li>Research <span class="meta">Analysis</span></li>
+        <li>Stakeholder Comms <span class="meta">Cross-Functional</span></li>
+        <li>Time Management <span class="meta">Organising</span></li>
+        <li>Analytical Thinking <span class="meta">Problem-Solving</span></li>
+        <li>Initiative <span class="meta">Quietly Bold</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ========== JOURNEY / EXPERIENCE ========== -->
+<section id="journey">
+  <div class="section-label">Section III · Journey</div>
+  <h2 class="section-title">A small <em>résumé,</em><br/>told softly.</h2>
+
+  <div class="timeline-wrap">
+    <div class="tl-item">
+      <div class="tl-date">Aug — Dec<br/>2025</div>
+      <div class="tl-body">
+        <h4>System Engineer Trainee</h4>
+        <div class="role-org">Infosys · Mysore</div>
+        <ul>
+          <li>Supported daily IT operations through shared mailboxes and internal ticketing systems.</li>
+          <li>Coordinated with cross-functional teams for timely incident and service request resolution.</li>
+          <li>Completed structured training in Java, SQL, DBMS, and data structures.</li>
+          <li>Assisted in reporting, documentation, and process tracking to improve operational efficiency.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-date">2022 —<br/>2024</div>
+      <div class="tl-body">
+        <h4>Public Relations Head</h4>
+        <div class="role-org">IR Council · SRM University AP</div>
+        <ul>
+          <li>Represented the institution in international coordination activities.</li>
+          <li>Led cultural exchange initiatives and stakeholder communication efforts.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="asterism">✦  ✦  ✦</div>
+
+<!-- ========== FEATURED WORK ========== -->
+<section id="work">
+  <div class="section-label">Section IV · Selected Work</div>
+  <h2 class="section-title">A project,<br/><em>kept close.</em></h2>
+
+  <div class="feature-card">
+    <div class="feature-num">01</div>
+    <div class="feature-content">
+      <h3>Lithium-ion Battery — State of Health Analysis</h3>
+      <p>
+        Conducted detailed data analysis to predict battery health with
+        <em style="color:var(--gold);font-style:italic;">95% accuracy</em>,
+        supporting performance evaluation and decision-making. Performed
+        data validation and documented findings for academic review.
+      </p>
+      <div class="feature-tags">
+        <span>Python</span>
+        <span>Data Analysis</span>
+        <span>Validation</span>
+        <span>Research</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== EDUCATION + CERTS ========== -->
+<section>
+  <div class="section-label">Section V · Foundations</div>
+  <h2 class="section-title">Where I've <em>learned</em><br/>so far.</h2>
+
+  <div class="duo-grid">
+    <div class="duo-col">
+      <h3>Education</h3>
+      <div class="edu-item">
+        <div class="yr">2021 — 2025</div>
+        <h4>B-Tech, Computer Science &amp; Engineering</h4>
+        <div class="meta">SRM University AP · 7.18 CGPA</div>
+      </div>
+      <div class="edu-item">
+        <div class="yr">2019 — 2021</div>
+        <h4>Higher Secondary</h4>
+        <div class="meta">BIEAP · 77.8%</div>
+      </div>
+      <div class="edu-item">
+        <div class="yr">2019</div>
+        <h4>Secondary</h4>
+        <div class="meta">BSEAP · 85.5%</div>
+      </div>
+    </div>
+
+    <div class="duo-col">
+      <h3>Certifications</h3>
+      <div class="cert-item">
+        <div class="yr">March 2026</div>
+        <h4>Google Project Management</h4>
+        <div class="meta">Coursera</div>
+      </div>
+      <div class="cert-item">
+        <div class="yr">January 2026</div>
+        <h4>Microsoft Business Analyst</h4>
+        <div class="meta">Coursera</div>
+      </div>
+      <div class="cert-item">
+        <div class="yr">January 2025</div>
+        <h4>Business Process Management</h4>
+        <div class="meta">Coursera</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONTACT ========== -->
+<section class="contact" id="contact">
+  <div class="section-label">Coda · Let's Talk</div>
+  <h2>Send a <em>letter,</em><br/>start a story.</h2>
+  <p class="lead">
+    Open to project management opportunities, internships, and conversations
+    over coffee about beautifully-run teams.
+  </p>
+  <a href="mailto:himabindhuchennupati10@gmail.com" class="contact-mail">himabindhuchennupati10@gmail.com</a>
+
+  <div class="contact-links">
+    <a href="https://github.com/Bindhuchowdary" target="_blank">Github</a>
+    <a href="https://linkedin.com/in/himabindhu" target="_blank">LinkedIn</a>
+    <a href="tel:+918099557899">+91 80995 57899</a>
+  </div>
+</section>
+
+<footer>
+  Designed with care · <span>✦</span> · MMXXVI
+</footer>
+
+<script>
+  // ---------- Intro / cherry tree loader ----------
+  (function () {
+    const intro = document.getElementById('intro');
+    const HOLD_MS = 4000;       // how long the intro is fully visible
+    const FADE_MS = 1200;       // how long the fade-out takes
+    setTimeout(() => {
+      intro.classList.add('is-fading');
+      document.body.classList.remove('intro-active');
+      // remove from DOM after fade completes
+      setTimeout(() => { intro && intro.remove(); }, FADE_MS + 50);
+    }, HOLD_MS);
+
+    // allow user to skip with click or any key
+    function skipIntro() {
+      if (intro.classList.contains('is-fading')) return;
+      intro.classList.add('is-fading');
+      document.body.classList.remove('intro-active');
+      setTimeout(() => { intro && intro.remove(); }, FADE_MS + 50);
+    }
+    intro.addEventListener('click', skipIntro);
+    window.addEventListener('keydown', skipIntro, { once: true });
+  })();
+
+  // ---------- Scroll-controlled second GIF ----------
+  const aboutSection = document.querySelector('.about');
+  const aboutGif = document.getElementById('aboutGif');
+
+  function updateAboutGif() {
+    const rect = aboutSection.getBoundingClientRect();
+    const sectionHeight = rect.height;
+    const windowHeight = window.innerHeight;
+
+    // progress: 0 when section just enters bottom of viewport, 1 when it's fully scrolled past top
+    const total = sectionHeight + windowHeight;
+    let progress = 1 - (rect.bottom / total);
+    progress = Math.max(0, Math.min(1, progress));
+
+    // Bell curve: opacity peaks at middle of scroll-through, fades on each side
+    // Cap peak at 0.55 so it stays atmospheric, not overpowering
+    const peak = 0.55;
+    let opacity;
+    if (progress < 0.5) {
+      opacity = progress * 2 * peak;
+    } else {
+      opacity = (1 - progress) * 2 * peak;
+    }
+
+    // Scale grows gently with scroll (0.9 -> 1.3)
+    const scale = 0.9 + progress * 0.4;
+
+    // Slight horizontal drift — gif emerges from off-screen-left then settles
+    const tx = -30 + progress * 20; // -30% to -10%
+
+    // Hue rotation across scroll for that iridescent feel
+    const hue = progress * 50;
+
+    // Slight blur at edges of scroll, sharper in middle
+    const blur = 2 + Math.abs(progress - 0.5) * 6;
+
+    aboutGif.style.opacity = opacity.toFixed(3);
+    aboutGif.style.transform =
+      `translate(${tx}%, -50%) scale(${scale.toFixed(3)})`;
+    aboutGif.style.filter = `hue-rotate(${hue}deg) blur(${blur.toFixed(1)}px) saturate(1.15)`;
+  }
+
+  // throttle with rAF
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        updateAboutGif();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  window.addEventListener('resize', updateAboutGif);
+  window.addEventListener('load', updateAboutGif);
+  updateAboutGif();
+
+  // ---------- Soften nav background once scrolled ----------
+  const navEl = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      navEl.style.background = 'linear-gradient(to bottom, rgba(5,5,5,0.85), rgba(5,5,5,0.4))';
+      navEl.style.borderBottom = '1px solid rgba(241,237,228,0.05)';
+    } else {
+      navEl.style.background = 'linear-gradient(to bottom, rgba(5,5,5,0.6), rgba(5,5,5,0))';
+      navEl.style.borderBottom = '1px solid transparent';
+    }
+  }, { passive: true });
+
+  // ---------- Section reveal on scroll ----------
+  const revealEls = document.querySelectorAll('section .section-title, section .section-label, .skills-col, .tl-item, .feature-card, .duo-col, .contact h2, .contact p, .contact-mail, .contact-links');
+  revealEls.forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(28px)';
+    el.style.transition = 'opacity 1s ease, transform 1s ease';
+  });
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
